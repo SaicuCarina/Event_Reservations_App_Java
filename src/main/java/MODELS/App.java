@@ -1,19 +1,27 @@
 package MODELS;
 /*import DAO.EventDAO;*/
+import DAO.EventDAO;
 import DAO.MyDBConnection;
 import DAO.UserDAO;
 /*import DAO.ReservationDAO;
 import DAO.LocationDAO;*/
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class App {
     private List<User> users;
+    private List<Event> events;
 
     public App() {
         this.users = new ArrayList<>();
-        loadUsersFromDB();
+        /*loadUsersFromDB();*/
+        this.events = new ArrayList<>();
+/*        loadEventsFromDB();*/
     }
 
     private void loadUsersFromDB() {
@@ -29,28 +37,54 @@ public class App {
         this.users = users;
     }
 
-    public User findUserByUsernameAndPassword(String username, String password) {
-        // Verificăm în lista curentă de utilizatori
-        for (User user : users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                return user; // Utilizatorul a fost găsit în listă
-            }
+    private void loadEventsFromDB() {
+        EventDAO eventDAO = new EventDAO();
+        events = eventDAO.getAllEventsFromDB();
+    }
+
+    public static boolean isEventAvailable(Event event) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        LocalDate eventDate;
+        LocalTime eventTime;
+        try {
+            eventDate = LocalDate.parse(event.getDate(), dateFormatter);
+            eventTime = LocalTime.parse(event.getTime(), timeFormatter);
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            return false; // Formatul datei sau al orei este invalid
         }
 
-        // Cautăm în baza de date dacă nu am găsit utilizatorul în lista curentă
+        LocalDate nowDate = LocalDate.now();
+        LocalTime nowTime = LocalTime.now();
+
+        if (eventDate.isAfter(nowDate)) {
+            return event.getAvailableSeats() > 0;
+        } else if (eventDate.isEqual(nowDate)) {
+            return eventTime.isAfter(nowTime) && event.getAvailableSeats() > 0;
+        } else {
+            return false;
+        }
+    }
+
+
+    public User findUserByUsernameAndPassword(String username, String password) {
+        for (User user : users) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return user;
+            }
+        }
         UserDAO userDAO = new UserDAO();
         List<User> usersFromDB = userDAO.getUsersFromDB();
         for (User user : usersFromDB) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                // Adăugăm utilizatorul găsit în lista aplicației
                 users.add(user);
-                return user; // Utilizatorul a fost găsit în baza de date
+                return user;
             }
         }
-
-        return null; // Utilizatorul nu a fost găsit nici în listă, nici în baza de date
+        return null;
     }
-
     public boolean isUsernameTaken(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
@@ -78,100 +112,3 @@ public class App {
     }
 }
 
-    /*public void addUserFromDatabase() {
-        // Fetch people from the database using PersonDAO
-        UserDAO userDAO = new UserDAO();
-        List<User> users = userDAO.getUsersFromDB();
-
-        // Add fetched bikes to the shop
-        for (User user : users) {
-            addPersonFromDB(user);
-        }
-    }
-
-    public void addPersonFromDB(User user) {
-         users.add(user);
-    }
-
-    public void addUser(User user) {
-        UserDAO userDAO = new UserDAO();
-        if (user instanceof Admin) {
-            if(person.validateEmail(person.getEmail())){
-                admins.add((Admin) person);
-                people.add(person);
-                personDAO.addUserToDB(person);
-            } else{
-                System.out.println("Invalid email");
-            }
-
-        } else if (person instanceof User) {
-            if(person.validateEmail(person.getEmail())){
-                users.add((User) person);
-                people.add(person);
-                personDAO.addUserToDB(person);
-            } else{
-                System.out.println("Invalid email");
-            }
-        }
-        public User searchUserByEmailPassword (String email, String password){
-            User foundUser = null;
-            for (User user : users) {
-                if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                    foundUser = user;
-                }
-            }
-            return foundUser;
-        }
-
-        public boolean isUserFound(User foundUser){
-            if (foundUser == null){
-                return false;
-            } else{
-                return true;
-            }
-        }*/
-
-
-
-
-    /*public void addUserToDB(User user) {
-        UserDAO userDAO = new UserDAO();
-        if (userDAO.registerUser(user.getUsername(), user.getPassword(), user.getEmail())) {
-            int id = userDAO.getLastInsertedId();
-            user.setId(id);
-            users.add(user);
-        }
-    }
-
-    public void addUser(User user) {
-        addUserToDB(user);
-    }
-
-    public User searchUserByEmailPassword(String email, String password) {
-        for (User user : users) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    public boolean isUserFound(User foundUser) {
-        return foundUser != null;
-    }
-
-    public boolean login(String email, String password) {
-        User foundUser = searchUserByEmailPassword(email, password);
-        return isUserFound(foundUser);
-    }
-
-    public boolean register(String username, String password, String email) {
-        for (User user : users) {
-            if (user.getUsername().equals(username) || user.getEmail().equals(email)) {
-                return false;  // User already exists
-            }
-        }
-        User newUser = new User(0, username, password, email);
-        addUser(newUser);
-        return true;
-    }*/

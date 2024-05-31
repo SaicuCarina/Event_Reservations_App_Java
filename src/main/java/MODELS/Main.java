@@ -4,58 +4,13 @@ import DAO.UserDAO;
 /*import DAO.ReservationDAO;*/
 import DAO.MyDBConnection;
 
-/*import DAO.EventDAO;*/
+import DAO.EventDAO;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDateTime;
 
-
-   /* public static void main(String[] args) {
-        App app = new App();
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("1. Log in");
-            System.out.println("2. Register");
-            System.out.println("3. Exit");
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-
-            if (choice == 1) {
-                System.out.print("Email: ");
-                String email = scanner.nextLine();
-                System.out.print("Password: ");
-                String password = scanner.nextLine();
-
-                if (app.login(email, password)) {
-                    System.out.println("Login successful!");
-                    // Continue to reservation or other functionalities
-                } else {
-                    System.out.println("Invalid email or password.");
-                }
-            } else if (choice == 2) {
-                System.out.print("Username: ");
-                String username = scanner.nextLine();
-                System.out.print("Password: ");
-                String password = scanner.nextLine();
-                System.out.print("Email: ");
-                String email = scanner.nextLine();
-
-                if (app.register(username, password, email)) {
-                    System.out.println("Registration successful!");
-                } else {
-                    System.out.println("Registration failed. Username or email already exists.");
-                }
-            } else if (choice == 3) {
-                break;
-            } else {
-                System.out.println("Invalid choice. Please try again.");
-            }
-        }
-
-        scanner.close();
-    }*/
    public class Main {
+
        public static void main(String[] args) {
            App app = new App();
            Scanner scanner = new Scanner(System.in);
@@ -68,7 +23,7 @@ import java.util.Scanner;
                System.out.println("3. Exit");
                System.out.print("Choose an option: ");
                int option = scanner.nextInt();
-               scanner.nextLine(); // Consumăm newline
+               scanner.nextLine();
 
                switch (option) {
                    case 1:
@@ -94,7 +49,6 @@ import java.util.Scanner;
                            System.out.print("Enter email: ");
                            email = scanner.nextLine();
 
-                           // Verificăm dacă username-ul este deja folosit
                            isEmailTaken = app.isEmailTaken(email);
                            if (isEmailTaken) {
                                System.out.println("This email is already registered. Please enter a different one.");
@@ -107,7 +61,6 @@ import java.util.Scanner;
                            System.out.print("Enter username: ");
                            username = scanner.nextLine();
 
-                           // Verificăm dacă username-ul este deja folosit
                            isUsernameTaken = app.isUsernameTaken(username);
                            if (isUsernameTaken) {
                                System.out.println("Username already taken. Please choose another one.");
@@ -116,7 +69,6 @@ import java.util.Scanner;
 
                        System.out.print("Enter password: ");
                        String password = scanner.nextLine();
-                       // Creăm un nou utilizator și îl adăugăm
                        User newUser = new User(0, email, username, password);
                        app.addUser(newUser);
 
@@ -124,7 +76,10 @@ import java.util.Scanner;
                        break;
                    case 3:
                        System.out.println("Exiting...");
-                       isRunning = false; // Ieșim din buclă și din program
+                       isRunning = false;
+                       break;
+                   case 4:
+
                        break;
                    default:
                        System.out.println("Invalid option. Please choose again.");
@@ -133,25 +88,37 @@ import java.util.Scanner;
            }
        }
        private static void showReservationMenu(Scanner scanner, User currentUser) {
+           App app = new App();
            while (true) {
                System.out.println("Reservation Menu:");
-               System.out.println("1. Make a reservation");
-               System.out.println("2. View reservations");
-               System.out.println("3. Logout");
+               System.out.println("1. Show all events");
+               System.out.println("2. Make a reservation");
+               System.out.println("3. View reservations");
+               System.out.println("4. Logout");
                System.out.print("Choose an option: ");
                int option = scanner.nextInt();
-               scanner.nextLine(); // Consume newline
+               scanner.nextLine();
 
                switch (option) {
                    case 1:
+                       System.out.println("Available events:");
+                       EventDAO eventDAO = new EventDAO();
+                       List<Event> eventsFromDB = eventDAO.getAllEventsFromDB();
+                       for (Event event : eventsFromDB) {
+                           if (App.isEventAvailable(event)) {
+                               System.out.println(event);
+                           }
+                       }
+                       break;
+                   case 2:
                        // Implement logic for making a reservation
                        System.out.println("Reservation made.");
                        break;
-                   case 2:
+                   case 3:
                        // Implement logic for viewing reservations
                        System.out.println("Viewing reservations.");
                        break;
-                   case 3:
+                   case 4:
                        System.out.println("Logging out...");
                        return;
                    default:
