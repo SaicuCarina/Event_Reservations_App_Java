@@ -1,6 +1,7 @@
 package MODELS;
 /*import DAO.EventDAO;*/
 import DAO.EventDAO;
+import DAO.LocationDAO;
 import DAO.MyDBConnection;
 import DAO.UserDAO;
 /*import DAO.ReservationDAO;
@@ -12,16 +13,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class App {
     private List<User> users;
     private List<Event> events;
+    private List<Location> locations;
 
     public App() {
         this.users = new ArrayList<>();
         /*loadUsersFromDB();*/
         this.events = new ArrayList<>();
 /*        loadEventsFromDB();*/
+        this.locations = new ArrayList<>();
     }
 
     private void loadUsersFromDB() {
@@ -109,6 +113,39 @@ public class App {
 
         // Adăugăm utilizatorul în lista aplicației
         users.add(user);
+    }
+
+    public static void showLocation(int id){
+        LocationDAO locationDAO = new LocationDAO();
+        Location location = locationDAO.getLocationById(id);
+        if (location != null) {
+            System.out.println(location);
+        } else {
+            System.out.println("Location not found.");
+        }
+    }
+    public static void showEventsByLocation() {
+        LocationDAO locationDAO = new LocationDAO();
+        EventDAO eventDAO = new EventDAO();
+
+        List<Location> locations = locationDAO.getAllLocations();
+        List<Event> events = eventDAO.getAllEventsFromDB();
+
+        for (Location location : locations) {
+            System.out.println("Location: " + location.getName() + ", Address: " + location.getAddress());
+            boolean hasEvents = false;
+
+            for (Event event : events) {
+                if (event.getLocationId() == location.getId() && isEventAvailable(event)) {
+                    System.out.println("  " + event);
+                    hasEvents = true;
+                }
+            }
+
+            if (!hasEvents) {
+                System.out.println("  No available events for this location.");
+            }
+        }
     }
 }
 

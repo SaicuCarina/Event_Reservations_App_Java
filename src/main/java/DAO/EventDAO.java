@@ -39,8 +39,8 @@ public class EventDAO {
         return eventList;
     }
 
-    private static Location findLocationById(int location_id) {
-        // Implementați căutarea locației după ID
-        return new LocationDAO().getLocationById(location_id);
-    }
+/*    private static Location findLocationById(int location_id) {
+        LocationDAO locationDAO = new LocationDAO();
+        return locationDAO.getLocationById(location_id);
+    }*/
 }

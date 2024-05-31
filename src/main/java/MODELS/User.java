@@ -8,6 +8,7 @@ public class User {
     private String password;
     private String email;
 
+
     public User(int id, String email, String username, String password) {
         this.id = id;
         this.email = email;
@@ -33,4 +34,5 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
+
 }

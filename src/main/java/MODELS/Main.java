@@ -79,7 +79,7 @@ import java.time.LocalDateTime;
                        isRunning = false;
                        break;
                    case 4:
-
+                       App.showEventsByLocation();
                        break;
                    default:
                        System.out.println("Invalid option. Please choose again.");
@@ -92,9 +92,10 @@ import java.time.LocalDateTime;
            while (true) {
                System.out.println("Reservation Menu:");
                System.out.println("1. Show all events");
-               System.out.println("2. Make a reservation");
-               System.out.println("3. View reservations");
-               System.out.println("4. Logout");
+               System.out.println("2. Show location by id");
+               System.out.println("3. Show all locations with the events");
+               System.out.println("4. View reservations");
+               System.out.println("5. Logout");
                System.out.print("Choose an option: ");
                int option = scanner.nextInt();
                scanner.nextLine();
@@ -111,12 +112,13 @@ import java.time.LocalDateTime;
                        }
                        break;
                    case 2:
-                       // Implement logic for making a reservation
-                       System.out.println("Reservation made.");
+                       System.out.println("Enter location id:");
+                       int locationId = scanner.nextInt();
+                       App.showLocation(locationId);
                        break;
+
                    case 3:
-                       // Implement logic for viewing reservations
-                       System.out.println("Viewing reservations.");
+                       App.showEventsByLocation();
                        break;
                    case 4:
                        System.out.println("Logging out...");

@@ -19,4 +19,16 @@ public class Location {
     public String toString() {
         return "Location [id=" + id + ", name=" + name + ", address=" + address + ", capacity=" + capacity + "]";
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

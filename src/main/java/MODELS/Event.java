@@ -11,12 +11,12 @@ public class Event {
     private int location_id;
     private int available_seats;
 
-    public Event(int id, String name, String date, String time, int location, int available_seats) {
+    public Event(int id, String name, String date, String time, int location_id, int available_seats) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
-        this.location_id = location;
+        this.location_id = location_id;
         this.available_seats = available_seats;
     }
 
@@ -35,5 +35,9 @@ public class Event {
 
     public String getTime() {
         return time;
+    }
+
+    public int getLocationId() {
+        return location_id;
     }
 }

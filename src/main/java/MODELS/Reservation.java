@@ -1,4 +1,3 @@
-/*
 package MODELS;
 
 import java.time.LocalDateTime;
@@ -64,4 +63,3 @@ public class Reservation {
         return "Reservation [id=" + id + ", eventId=" + eventId + ", userId=" + userId + ", seatsReserved=" + seatsReserved + ", reservationDateTime=" + reservationDateTime + "]";
     }
 }
-*/
