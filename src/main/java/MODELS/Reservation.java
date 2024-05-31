@@ -4,17 +4,19 @@ import java.time.LocalDateTime;
 
 public class Reservation {
     private int id;
-    private int eventId;
-    private int userId;
-    private int seatsReserved;
-    private LocalDateTime reservationDateTime;
+    private int event_id;
+    private int user_id;
+    private int seats_reserved;
+    private String reservation_date;
+    private String cancellation_date;
 
-    public Reservation(int id, int eventId, int userId, int seatsReserved, LocalDateTime reservationDateTime) {
+    public Reservation(int id, int event_id, int user_id, int seats_reserved, String reservation_date, String cancellation_date) {
         this.id = id;
-        this.eventId = eventId;
-        this.userId = userId;
-        this.seatsReserved = seatsReserved;
-        this.reservationDateTime = reservationDateTime;
+        this.event_id = event_id;
+        this.user_id = user_id;
+        this.seats_reserved = seats_reserved;
+        this.reservation_date = reservation_date;
+        this.cancellation_date = cancellation_date;
     }
 
     // Getters and setters
@@ -27,39 +29,39 @@ public class Reservation {
     }
 
     public int getEventId() {
-        return eventId;
+        return event_id;
     }
 
     public void setEventId(int eventId) {
-        this.eventId = eventId;
+        this.event_id = eventId;
     }
 
     public int getUserId() {
-        return userId;
+        return user_id;
     }
 
     public void setUserId(int userId) {
-        this.userId = userId;
+        this.user_id = userId;
     }
 
     public int getSeatsReserved() {
-        return seatsReserved;
+        return seats_reserved;
     }
 
     public void setSeatsReserved(int seatsReserved) {
-        this.seatsReserved = seatsReserved;
+        this.seats_reserved = seatsReserved;
     }
 
-    public LocalDateTime getReservationDateTime() {
-        return reservationDateTime;
+    public String getReservationDateTime() {
+        return reservation_date;
     }
 
-    public void setReservationDateTime(LocalDateTime reservationDateTime) {
-        this.reservationDateTime = reservationDateTime;
+    public void setReservationDateTime(String reservationDate) {
+        this.reservation_date = reservationDate;
     }
 
     @Override
     public String toString() {
-        return "Reservation [id=" + id + ", eventId=" + eventId + ", userId=" + userId + ", seatsReserved=" + seatsReserved + ", reservationDateTime=" + reservationDateTime + "]";
+        return "Reservation [id=" + id + ", eventId=" + event_id + ", userId=" + user_id + ", seatsReserved=" + seats_reserved + ", reservationDate=" + reservation_date + ", cancellationDate=" + cancellation_date +"]";
     }
 }

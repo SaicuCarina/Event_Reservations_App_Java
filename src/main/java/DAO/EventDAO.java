@@ -4,6 +4,8 @@ import MODELS.Location;
 import MODELS.Event;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
@@ -39,8 +41,18 @@ public class EventDAO {
         return eventList;
     }
 
-/*    private static Location findLocationById(int location_id) {
-        LocationDAO locationDAO = new LocationDAO();
-        return locationDAO.getLocationById(location_id);
-    }*/
+    public void updateSeats(int eventId, int seatsReserved) {
+        Connection connection = dbConnection.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE events SET available_seats = available_seats - ? WHERE id = ?");
+            // Set the values for the placeholders
+            ps.setInt(1, seatsReserved);
+            ps.setInt(2, eventId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error retrieving location from the database: " + e.getMessage());
+        }
+
+    }
 }
+

@@ -55,4 +55,24 @@ public class UserDAO {
             System.err.println("Error adding user to the database: " + e.getMessage());
         }
     }
+    public User getUserById(int userId) {
+        Connection connection = dbConnection.getConnection();
+        User user = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE id = ?");
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                user = new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 }

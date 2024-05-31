@@ -88,14 +88,19 @@ import java.time.LocalDateTime;
            }
        }
        private static void showReservationMenu(Scanner scanner, User currentUser) {
+           User Current = currentUser;
            App app = new App();
            while (true) {
                System.out.println("Reservation Menu:");
                System.out.println("1. Show all events");
                System.out.println("2. Show location by id");
                System.out.println("3. Show all locations with the events");
-               System.out.println("4. View reservations");
-               System.out.println("5. Logout");
+               System.out.println("4. Make reservation");
+               System.out.println("5. Show your reservations");
+               System.out.println("6. Show reservation information");
+               System.out.println("7. Cancel a reservation");
+               System.out.println("8. Report!");
+               System.out.println("9. Logout");
                System.out.print("Choose an option: ");
                int option = scanner.nextInt();
                scanner.nextLine();
@@ -121,6 +126,50 @@ import java.time.LocalDateTime;
                        App.showEventsByLocation();
                        break;
                    case 4:
+                       System.out.println("Enter event ID to reserve:");
+                       int eventId = scanner.nextInt();
+                       scanner.nextLine();
+                       Event event = null;
+                       EventDAO eventDAO2 = new EventDAO();
+                       List<Event> eventsFromDB2 = eventDAO2.getAllEventsFromDB();
+                       for (Event e : eventsFromDB2) {
+                           if (e.getId() == eventId) {
+                               event = e;
+                               break;
+                           }
+                       }
+                       if (event != null) {
+                           System.out.println("Enter number of seats to reserve:");
+                           int seatsReserved = scanner.nextInt();
+                           scanner.nextLine();
+                           app.reserveEvent(currentUser, event, seatsReserved);
+                       } else {
+                           System.out.println("Event not found.");
+                       }
+                       break;
+                   case 5:
+                       System.out.println("Your reservations:");
+                       List<Reservation> reservations = app.getUserReservations(currentUser);
+                       for (Reservation reservation : reservations) {
+                           System.out.println(reservation);
+                       }
+                       break;
+                   case 6:
+                       System.out.println("Enter reservation ID to view information:");
+                       int resId = scanner.nextInt();
+                       scanner.nextLine();
+                       String reservationInfo = app.getReservationInfo(resId);
+                       System.out.println(reservationInfo);
+                       break;
+                   case 7:
+                       System.out.println("Enter reservation ID to cancel:");
+                       int reservationId = scanner.nextInt();
+                       scanner.nextLine();
+                       app.cancelReservation(reservationId);
+                       break;
+                   case 8:
+                       break;
+                   case 9:
                        System.out.println("Logging out...");
                        return;
                    default:

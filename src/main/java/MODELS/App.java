@@ -4,9 +4,10 @@ import DAO.EventDAO;
 import DAO.LocationDAO;
 import DAO.MyDBConnection;
 import DAO.UserDAO;
-/*import DAO.ReservationDAO;
-import DAO.LocationDAO;*/
+import DAO.ReservationDAO;
+import DAO.LocationDAO;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -19,6 +20,7 @@ public class App {
     private List<User> users;
     private List<Event> events;
     private List<Location> locations;
+    private List<Reservation> reservations;
 
     public App() {
         this.users = new ArrayList<>();
@@ -26,6 +28,7 @@ public class App {
         this.events = new ArrayList<>();
 /*        loadEventsFromDB();*/
         this.locations = new ArrayList<>();
+        this.reservations = new ArrayList<>();
     }
 
     private void loadUsersFromDB() {
@@ -146,6 +149,32 @@ public class App {
                 System.out.println("  No available events for this location.");
             }
         }
+    }
+    public void reserveEvent(User user, Event event, int seatsReserved) {
+        if (event.getAvailableSeats() >= seatsReserved) {
+            ReservationDAO reservationDAO = new ReservationDAO();
+            EventDAO eventDAO = new EventDAO();
+            reservationDAO.reserveEvent(user.getId(), event.getId(), seatsReserved);
+            event.setAvailableSeats(event.getAvailableSeats() - seatsReserved);
+            eventDAO.updateSeats(event.getId(), seatsReserved);
+            System.out.println("Reservation successful for event: " + event.getName());
+        } else {
+            System.out.println("Not enough available seats for event: " + event.getName());
+        }
+    }
+
+    public List<Reservation> getUserReservations(User user) {
+        ReservationDAO reservationDAO = new ReservationDAO();
+        return reservationDAO.getUserReservations(user.getId());
+    }
+
+    public void cancelReservation(int reservationId) {
+        ReservationDAO reservationDAO = new ReservationDAO();
+        reservationDAO.cancelReservation(reservationId);
+    }
+    public String getReservationInfo(int reservationId) {
+        ReservationDAO reservationDAO = new ReservationDAO();
+        return reservationDAO.getReservationInfoById(reservationId);
     }
 }
 

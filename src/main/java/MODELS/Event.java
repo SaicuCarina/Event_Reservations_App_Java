@@ -40,4 +40,16 @@ public class Event {
     public int getLocationId() {
         return location_id;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setAvailableSeats(int i) {
+        this.available_seats = i;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
