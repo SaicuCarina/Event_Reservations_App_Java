@@ -1,5 +1,6 @@
 package DAO;
 
+import MODELS.EventCategory;
 import MODELS.Location;
 import MODELS.Reservation;
 import MODELS.User;
@@ -181,7 +182,7 @@ public class ReservationDAO {
         String reservationInfo = "Reservation not found.";
         try {
             PreparedStatement ps = connection.prepareStatement(
-                    "SELECT r.id, r.user_id, r.event_id, r.seats_reserved, r.reservation_date, e.name, e.date, e.time, e.location_id " +
+                    "SELECT r.id, r.user_id, r.event_id, r.seats_reserved, r.reservation_date, e.name, e.date, e.time, e.location_id, e.category " +
                             "FROM reservations r JOIN events e ON r.event_id = e.id " +
                             "WHERE r.id = ?"
             );
@@ -197,6 +198,7 @@ public class ReservationDAO {
                 String eventDate = rs.getString("date");
                 String eventTime = rs.getString("time");
                 int locationId = rs.getInt("location_id");
+                EventCategory category = EventCategory.valueOf(rs.getString("category"));
 
                 UserDAO userDAO = new UserDAO();
                 User user = userDAO.getUserById(userId);
@@ -208,9 +210,9 @@ public class ReservationDAO {
 
                 reservationInfo = String.format(
                         "Reservation ID: %d\nSeats Reserved: %d\nReservation Date: %s\n" +
-                                "Event Name: %s\nEvent Date: %s\nEvent Time: %s\nLocation: %s",
+                                "Event Name: %s\nEvent Date: %s\nEvent Time: %s\nLocation: %s\nCategory: %s",
                         reservationId, seatsReserved, reservationDate,
-                        eventName, eventDate, eventTime, locationDetails
+                        eventName, eventDate, eventTime, locationDetails, category
                 );
             }
         } catch (SQLException e) {

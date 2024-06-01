@@ -1,5 +1,6 @@
 package MODELS;
 
+import DAO.LocationDAO;
 import DAO.UserDAO;
 /*import DAO.ReservationDAO;*/
 import DAO.MyDBConnection;
@@ -32,7 +33,7 @@ import java.time.LocalDateTime;
                        String loginUsername = scanner.nextLine();
                        System.out.print("Enter password: ");
                        String loginPassword = scanner.nextLine();
-                       User currentUser = app.findUserByUsernameAndPassword(loginUsername, loginPassword);
+                       User currentUser = app.searchUserByUsernameAndPassword(loginUsername, loginPassword);
                        if (currentUser != null) {
                            System.out.println("Login successful.");
                            showReservationMenu(scanner, currentUser);
@@ -79,7 +80,30 @@ import java.time.LocalDateTime;
                        isRunning = false;
                        break;
                    case 4:
-                       App.showEventsByLocation();
+                       System.out.println("Select category to view events:");
+                       EventCategory[] categories = EventCategory.values();
+                       for (int i = 0; i < categories.length; i++) {
+                           System.out.println((i + 1) + ". " + categories[i]);
+                       }
+                       System.out.print("Enter category number: ");
+                       int categoryNumber = scanner.nextInt();
+                       scanner.nextLine();
+
+                       if (categoryNumber < 1 || categoryNumber > categories.length) {
+                           System.out.println("Invalid category number.");
+                           break;
+                       }
+
+                       EventCategory category = categories[categoryNumber - 1];
+                       List<Event> eventsByCategory = app.searchEventByCategory(category);
+                       if (!eventsByCategory.isEmpty()) {
+                           System.out.println("Events in category " + category + ":");
+                           for (Event event : eventsByCategory) {
+                               System.out.println(event);
+                           }
+                       } else {
+                           System.out.println("No events found for the specified category.");
+                       }
                        break;
                    default:
                        System.out.println("Invalid option. Please choose again.");
@@ -93,14 +117,18 @@ import java.time.LocalDateTime;
            while (true) {
                System.out.println("Reservation Menu:");
                System.out.println("1. Show all events");
-               System.out.println("2. Show location by id");
-               System.out.println("3. Show all locations with the events");
-               System.out.println("4. Make reservation");
-               System.out.println("5. Show your reservations");
-               System.out.println("6. Show reservation information");
-               System.out.println("7. Cancel a reservation");
-               System.out.println("8. Report!");
-               System.out.println("9. Logout");
+               System.out.println("2. Show all locations");
+               System.out.println("3. Search location by id"); // Search
+               System.out.println("4. Search events from a specific location"); // Search
+               System.out.println("5. Show all locations with the events");
+               System.out.println("6. Search events by date"); // Search
+               System.out.println("7. Search events by category"); // Search
+               System.out.println("8. Make reservation");
+               System.out.println("9. Show your reservations");
+               System.out.println("10. Show reservation information");
+               System.out.println("11. Cancel a reservation");
+               System.out.println("12. Report!");
+               System.out.println("13. Logout");
                System.out.print("Choose an option: ");
                int option = scanner.nextInt();
                scanner.nextLine();
@@ -117,15 +145,71 @@ import java.time.LocalDateTime;
                        }
                        break;
                    case 2:
+                       System.out.println("All the locations:");
+                       LocationDAO locationDAO = new LocationDAO();
+                       List<Location> locationsFromDB = locationDAO.getAllLocations();
+                       for (Location location : locationsFromDB) {
+                           System.out.println(location);
+                       }
+                       break;
+                   case 3:
                        System.out.println("Enter location id:");
                        int locationId = scanner.nextInt();
-                       App.showLocation(locationId);
-                       break;
-
-                   case 3:
-                       App.showEventsByLocation();
+                       Location location;
+                       location = app.searchLocationById(locationId);
+                       System.out.println(location);
                        break;
                    case 4:
+                       System.out.println("Enter location name:");
+                       String locationName = scanner.nextLine();
+                       Location location1 = app.searchEventsByLocationName(locationName);
+                       if (location1 != null) {
+                           System.out.println("Location found: " + location1.getName() + ", " + location1.getAddress());
+                       }
+                       break;
+                   case 5:
+                       App.showEventsByLocation();
+                       break;
+                   case 6:
+                       System.out.println("Enter date (yyyy-MM-dd) to view events:");
+                       String date = scanner.nextLine();
+                       List<Event> eventsByDate = app.searchEventsByDate(date);
+                       if (!eventsByDate.isEmpty()) {
+                           System.out.println("Events on " + date + ":");
+                           for (Event event : eventsByDate) {
+                               System.out.println(event);
+                           }
+                       } else {
+                           System.out.println("No events found for the specified date.");
+                       }
+                       break;
+                   case 7:
+                       System.out.println("Select category to view events:");
+                       EventCategory[] categories = EventCategory.values();
+                       for (int i = 0; i < categories.length; i++) {
+                           System.out.println((i + 1) + ". " + categories[i]);
+                       }
+                       System.out.print("Enter category number: ");
+                       int categoryNumber = scanner.nextInt();
+                       scanner.nextLine();
+
+                       if (categoryNumber < 1 || categoryNumber > categories.length) {
+                           System.out.println("Invalid category number.");
+                           break;
+                       }
+
+                       EventCategory category = categories[categoryNumber - 1];
+                       List<Event> eventsByCategory = app.searchEventByCategory(category);
+                       if (!eventsByCategory.isEmpty()) {
+                           System.out.println("Events in category " + category + ":");
+                           for (Event event : eventsByCategory) {
+                               System.out.println(event);
+                           }
+                       } else {
+                           System.out.println("No events found for the specified category.");
+                       }
+                       break;
+                   case 8:
                        System.out.println("Enter event ID to reserve:");
                        int eventId = scanner.nextInt();
                        scanner.nextLine();
@@ -147,29 +231,29 @@ import java.time.LocalDateTime;
                            System.out.println("Event not found.");
                        }
                        break;
-                   case 5:
+                   case 9:
                        System.out.println("Your reservations:");
                        List<Reservation> reservations = app.getUserReservations(currentUser);
                        for (Reservation reservation : reservations) {
                            System.out.println(reservation);
                        }
                        break;
-                   case 6:
+                   case 10:
                        System.out.println("Enter reservation ID to view information:");
                        int resId = scanner.nextInt();
                        scanner.nextLine();
                        String reservationInfo = app.getReservationInfo(resId);
                        System.out.println(reservationInfo);
                        break;
-                   case 7:
+                   case 11:
                        System.out.println("Enter reservation ID to cancel:");
                        int reservationId = scanner.nextInt();
                        scanner.nextLine();
                        app.cancelReservation(reservationId);
                        break;
-                   case 8:
+                   case 12:
                        break;
-                   case 9:
+                   case 13:
                        System.out.println("Logging out...");
                        return;
                    default:

@@ -57,4 +57,27 @@ public class LocationDAO {
         }
         return foundLocation;
     }
+
+    public Location getLocationByName(String name){
+        Connection connection = dbConnection.getConnection();
+        Location foundLocation = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM locations WHERE name = ?");
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+                int id = rs.getInt("id");
+                String nameLocation = rs.getString("name");
+                String address = rs.getString("address");
+                int capacity = rs.getInt("capacity");
+
+                foundLocation = new Location(id, nameLocation, address, capacity);
+
+            }
+        } catch (SQLException e){
+            System.err.println("Error retrieving location from the database: " + e.getMessage());
+        }
+        return foundLocation;
+    }
 }

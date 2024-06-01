@@ -2,21 +2,17 @@ package MODELS;
 /*import DAO.EventDAO;*/
 import DAO.EventDAO;
 import DAO.LocationDAO;
-import DAO.MyDBConnection;
 import DAO.UserDAO;
 import DAO.ReservationDAO;
-import DAO.LocationDAO;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class App {
+public class App implements Search, Reserve{
     private List<User> users;
     private List<Event> events;
     private List<Location> locations;
@@ -24,29 +20,9 @@ public class App {
 
     public App() {
         this.users = new ArrayList<>();
-        /*loadUsersFromDB();*/
         this.events = new ArrayList<>();
-/*        loadEventsFromDB();*/
         this.locations = new ArrayList<>();
         this.reservations = new ArrayList<>();
-    }
-
-    private void loadUsersFromDB() {
-        UserDAO userDAO = new UserDAO();
-        users = userDAO.getUsersFromDB();
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-    private void loadEventsFromDB() {
-        EventDAO eventDAO = new EventDAO();
-        events = eventDAO.getAllEventsFromDB();
     }
 
     public static boolean isEventAvailable(Event event) {
@@ -60,7 +36,7 @@ public class App {
             eventTime = LocalTime.parse(event.getTime(), timeFormatter);
         } catch (DateTimeParseException e) {
             e.printStackTrace();
-            return false; // Formatul datei sau al orei este invalid
+            return false;
         }
 
         LocalDate nowDate = LocalDate.now();
@@ -75,8 +51,8 @@ public class App {
         }
     }
 
-
-    public User findUserByUsernameAndPassword(String username, String password) {
+    @Override
+    public User searchUserByUsernameAndPassword(String username, String password) {
         for (User user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 return user;
@@ -118,13 +94,14 @@ public class App {
         users.add(user);
     }
 
-    public static void showLocation(int id){
+    @Override
+    public Location searchLocationById(int id){
         LocationDAO locationDAO = new LocationDAO();
         Location location = locationDAO.getLocationById(id);
         if (location != null) {
-            System.out.println(location);
+            return location;
         } else {
-            System.out.println("Location not found.");
+            return null;
         }
     }
     public static void showEventsByLocation() {
@@ -150,6 +127,7 @@ public class App {
             }
         }
     }
+    @Override
     public void reserveEvent(User user, Event event, int seatsReserved) {
         if (event.getAvailableSeats() >= seatsReserved) {
             ReservationDAO reservationDAO = new ReservationDAO();
@@ -158,23 +136,58 @@ public class App {
             event.setAvailableSeats(event.getAvailableSeats() - seatsReserved);
             eventDAO.updateSeats(event.getId(), seatsReserved);
             System.out.println("Reservation successful for event: " + event.getName());
+            System.out.println("Dress Code: " + event.getDressCode().getDressCodeMessage());
         } else {
             System.out.println("Not enough available seats for event: " + event.getName());
         }
     }
 
+    @Override
     public List<Reservation> getUserReservations(User user) {
         ReservationDAO reservationDAO = new ReservationDAO();
         return reservationDAO.getUserReservations(user.getId());
     }
 
+    @Override
     public void cancelReservation(int reservationId) {
         ReservationDAO reservationDAO = new ReservationDAO();
         reservationDAO.cancelReservation(reservationId);
     }
+    @Override
     public String getReservationInfo(int reservationId) {
         ReservationDAO reservationDAO = new ReservationDAO();
         return reservationDAO.getReservationInfoById(reservationId);
     }
+    @Override
+    public Location searchEventsByLocationName(String locationName) {
+        LocationDAO locationDAO = new LocationDAO();
+        Location location = locationDAO.getLocationByName(locationName);
+        if (location != null) {
+            EventDAO eventDAO = new EventDAO();
+            List<Event> events = eventDAO.getEventsByLocation(location.getId());
+            System.out.println("Events at location: " + location.getName() + ", " + location.getAddress());
+            for (Event event : events) {
+                if (isEventAvailable(event)) {
+                    System.out.println(event);
+                }
+            }
+        } else {
+            System.out.println("Location not found.");
+        }
+        return location;
+    }
+
+    @Override
+    public List<Event> searchEventsByDate(String date) {
+        EventDAO eventDAO = new EventDAO();
+        return eventDAO.getEventsByDate(date);
+    }
+
+    @Override
+    public List<Event> searchEventByCategory(EventCategory category) {
+        EventDAO eventDAO = new EventDAO();
+        return eventDAO.searchEventByCategory(category);
+    }
+
 }
 

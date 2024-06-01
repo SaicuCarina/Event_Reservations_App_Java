@@ -10,14 +10,18 @@ public class Event {
     private String time;
     private int location_id;
     private int available_seats;
+    private EventCategory category;
+    private DressCode dressCode;
 
-    public Event(int id, String name, String date, String time, int location_id, int available_seats) {
+    public Event(int id, String name, String date, String time, int location_id, int available_seats, EventCategory category, DressCode dressCode) {
         this.id = id;
         this.name = name;
         this.date = date;
         this.time = time;
         this.location_id = location_id;
         this.available_seats = available_seats;
+        this.category = category;
+        this.dressCode = dressCode;
     }
 
     public String getDate() {
@@ -30,7 +34,7 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event [id=" + id + ", name=" + name + ", date=" + date +", time=" + time + ", location=" + location_id + ", availableSeats=" + available_seats + "]";
+        return "Event [id=" + id + ", name=" + name + ", date=" + date +", time=" + time + ", location=" + location_id + ", availableSeats=" + available_seats + ", category=" + category + "]";
     }
 
     public String getTime() {
@@ -51,5 +55,8 @@ public class Event {
 
     public String getName() {
         return name;
+    }
+    public DressCode getDressCode() {
+        return dressCode;
     }
 }
