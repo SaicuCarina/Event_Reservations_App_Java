@@ -79,32 +79,6 @@ import java.time.LocalDateTime;
                        System.out.println("Exiting...");
                        isRunning = false;
                        break;
-                   case 4:
-                       System.out.println("Select category to view events:");
-                       EventCategory[] categories = EventCategory.values();
-                       for (int i = 0; i < categories.length; i++) {
-                           System.out.println((i + 1) + ". " + categories[i]);
-                       }
-                       System.out.print("Enter category number: ");
-                       int categoryNumber = scanner.nextInt();
-                       scanner.nextLine();
-
-                       if (categoryNumber < 1 || categoryNumber > categories.length) {
-                           System.out.println("Invalid category number.");
-                           break;
-                       }
-
-                       EventCategory category = categories[categoryNumber - 1];
-                       List<Event> eventsByCategory = app.searchEventByCategory(category);
-                       if (!eventsByCategory.isEmpty()) {
-                           System.out.println("Events in category " + category + ":");
-                           for (Event event : eventsByCategory) {
-                               System.out.println(event);
-                           }
-                       } else {
-                           System.out.println("No events found for the specified category.");
-                       }
-                       break;
                    default:
                        System.out.println("Invalid option. Please choose again.");
                        break;

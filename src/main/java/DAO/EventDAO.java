@@ -31,8 +31,8 @@ public class EventDAO {
                 int location_id = rs.getInt("location_id");
                 int available_seats = rs.getInt("available_seats");
                 EventCategory category = EventCategory.valueOf(rs.getString("category"));
-
                 DressCode dressCode;
+
                 switch (category) {
                     case show:
                         dressCode = new DressCodeShow();

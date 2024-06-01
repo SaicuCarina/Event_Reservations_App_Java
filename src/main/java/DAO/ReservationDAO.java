@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReservationDAO {
     private MyDBConnection dbConnection;
@@ -44,7 +46,13 @@ public class ReservationDAO {
         return reservationList;
     }
 
-    public void reserveEvent(int userId, int eventId, int seats_reserved) {
+    public void reserveEvent(int userId, int eventId, int seatsReserved) {
+        int cancellationsLastMonth = getCancellationsLastMonth(userId);
+        if (cancellationsLastMonth >= 3) {
+            System.out.println("You have made more than 3 cancellations in the last month. You cannot make a new reservation at this time.");
+            return;
+        }
+
         Connection connection = dbConnection.getConnection();
         try {
             // Prepare the INSERT statement
@@ -55,7 +63,7 @@ public class ReservationDAO {
             // Set the values for the placeholders
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, eventId);
-            preparedStatement.setInt(3, seats_reserved);
+            preparedStatement.setInt(3, seatsReserved);
 
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -68,8 +76,35 @@ public class ReservationDAO {
 
             System.out.println("Reservation added to the database.");
         } catch (SQLException e) {
-            System.err.println("Error adding user to the database: " + e.getMessage());
+            System.err.println("Error adding reservation to the database: " + e.getMessage());
         }
+    }
+    public List<Reservation> getCancelledReservations(int userId) {
+        Connection connection = dbConnection.getConnection();
+        List<Reservation> cancelledReservations = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT * FROM reservations WHERE user_id = ? AND cancellation_date IS NOT NULL"
+            );
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int eventId = rs.getInt("event_id");
+                int seatsReserved = rs.getInt("seats_reserved");
+                String reservationDate = rs.getString("reservation_date");
+                String cancellationDate = rs.getString("cancellation_date");
+
+                Reservation reservation = new Reservation(id, userId, eventId, seatsReserved, reservationDate, cancellationDate);
+                cancelledReservations.add(reservation);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cancelledReservations;
     }
 
     public List<Reservation> getUserReservations(int userId) {
@@ -79,7 +114,7 @@ public class ReservationDAO {
             PreparedStatement ps = connection.prepareStatement(
                     "SELECT r.id, r.user_id, r.event_id, r.seats_reserved, r.reservation_date, r.cancellation_date, e.date, e.time " +
                             "FROM reservations r JOIN events e ON r.event_id = e.id " +
-                            "WHERE r.user_id = ? AND e.date > ?"
+                            "WHERE r.user_id = ? AND e.date > ? AND r.cancellation_date IS NULL"
             );
             ps.setInt(1, userId);
             ps.setString(2, LocalDate.now().toString());
@@ -219,6 +254,28 @@ public class ReservationDAO {
             e.printStackTrace();
         }
         return reservationInfo;
+    }
+    public int getCancellationsLastMonth(int userId) {
+        Connection connection = dbConnection.getConnection();
+        int cancellationCount = 0;
+
+        try {
+            LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT COUNT(*) AS cancellation_count FROM reservations WHERE user_id = ? AND cancellation_date >= ?"
+            );
+            ps.setInt(1, userId);
+            ps.setDate(2, Date.valueOf(oneMonthAgo));
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cancellationCount = rs.getInt("cancellation_count");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cancellationCount;
     }
 
 }
