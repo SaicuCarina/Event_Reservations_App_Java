@@ -36,7 +36,35 @@ Using object-oriented programming (OOP) principles to ensure solid and maintaina
 
 ## Project Structure
 
+### DAO (Data Access Object):
 
+1. UserDAO.java: This file contains the 'UserDAO' class, responsible for handling database operations related to users, such as retrieving user information, adding new users, updating user details, and deleting users.
+2. EventDAO.java: Here, you'll find the 'EventDAO' class, which manages database interactions related to events. It includes methods for fetching event details, adding new events, updating event information, and deleting events.
+3. LocationDAO.java: The 'LocationDAO' class deals with database operations concerning event locations. It provides functionalities to retrieve location details, add new locations, update location information, and delete locations.
+4. ReservationDAO.java: This file houses the 'ReservationDAO class', responsible for handling database operations related to event reservations. It includes methods for adding reservations, retrieving reservation details, updating reservation information, and canceling reservations.
+
+### MODELS:
+
+1. User.java: The 'User' class defines the structure of a user entity. It contains fields such as ID, username, email and password. Additionally, it may include methods for accessing and manipulating user data.
+2. Event.java: Here, you'll find the 'Event' class, which represents the structure of an event entity. It typically includes attributes like ID, name, date, time, location, available seats, and possibly other details related to events.
+3. Location.java: The 'Location' class defines the structure of a location entity. It includes properties such as ID, name, address, and capacity, reflecting the essential information associated with event locations.
+4. Reservation.java: This file contains the 'Reservation' class, representing the structure of a reservation entity. It includes attributes like reservation ID, user ID, event ID, number of reserved seats, reservation date, cancellation date, and any other relevant information related to reservations.
+
+### Enum:
+
+1. EventCategory.java: This file contains the 'EventCategory' enum, which defines the various categories of events available, such as shows, concerts, conferences, etc. Enumerations can include types like SHOW, CONCERT, CONFERENCE, etc., depending on the requirements.
+
+### Abstract Classes:
+
+1. DressCode.java: In this file, we have the abstract class 'DressCode', which serves as a skeleton for defining the dress code associated with different types of events. This class can have abstract or concrete methods to handle specific clothing requirements for each event category.
+2. DressCodeShow.java: Here we find the 'DressCodeShow' class, which extends the abstract class 'DressCode'. This class can provide specific implementations for the dress code associated with show events.
+3. DressCodeConcert.java: Similar to 'DressCodeShow', we have the DressCodeConcert class, which extends 'DressCode', and may contain specific implementations for the dress code at concerts.
+4. DressCodeConference.java: This class, which is a subclass of 'DressCode', can provide specific implementations for the dress code at conferences.
+
+### Interfaces:
+
+1. Search.java: In this file, we have the 'Search' interface, which defines the methods used for searching information in the database. These methods can include searching by name, date, location, etc., depending on the application's needs.
+2. Reserve.java: Here we have the 'Reserve' interface, which contains methods associated with reservation operations. These methods can include adding a new reservation, canceling an existing reservation, updating reservation details, etc.
 
 ## Database
 
