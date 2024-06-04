@@ -72,3 +72,11 @@ For the purpose of this project, the database acts as a central location for org
 
 <img width="1000" alt="image" src="https://github.com/SaicuCarina/Event_Reservations_App_Java/assets/93483071/d73e9570-3c76-4b5a-854e-f62daf20ae79">
 
+## Design Patterns
+
+## Main Class
+
+## Conclusion
+
+I had an excellent chance to solidify my understanding of advanced object-oriented programming concepts and design patterns with this assignment. I gained extensive knowledge about how crucial it is to arrange the code into packages.
+
