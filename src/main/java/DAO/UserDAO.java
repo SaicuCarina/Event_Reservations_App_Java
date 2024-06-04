@@ -1,7 +1,5 @@
 package DAO;
 
-import DAO.MyDBConnection;
-import org.example.SimpleUser;
 import MODELS.User;
 
 import java.sql.*;

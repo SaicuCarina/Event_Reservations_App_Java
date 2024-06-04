@@ -1,11 +1,9 @@
 package MODELS;
 
 import DAO.*;
-/*import DAO.ReservationDAO;*/
-
 import java.util.List;
 import java.util.Scanner;
-import java.time.LocalDateTime;
+
 
    public class Main {
 
@@ -137,9 +135,6 @@ import java.time.LocalDateTime;
                        System.out.println("Enter location name:");
                        String locationName = scanner.nextLine();
                        app.searchEventsByLocationName(locationName);
-                       /*if (location1 != null) {
-                           System.out.println("Location found: " + location1.getName() + ", " + location1.getAddress());
-                       }*/
                        break;
                    case 5:
                        App.showEventsByLocation();
@@ -184,12 +179,10 @@ import java.time.LocalDateTime;
                        }
                        break;
                    case 8:
-
-                       boolean check = app.check(currentUser);
-                       if(!check){
+                       if(!app.check(currentUser)){
+                           System.out.println("You have made more than 3 cancellations in the last month. You cannot make a new reservation at this time.");
                            break;
                        }
-
                        System.out.println("Enter event ID to reserve:");
                        int eventId = scanner.nextInt();
                        scanner.nextLine();
@@ -232,6 +225,12 @@ import java.time.LocalDateTime;
                        app.cancelReservation(reservationId);
                        break;
                    case 12:
+                       if(app.check(currentUser)){
+                           System.out.println("No report is available to be shown.");
+                           break;
+                       }
+                       System.out.println("Generating cancellation report for current user...");
+                       app.generateCancellationReport(currentUser.getId());
                        break;
                    case 13:
                        System.out.println("Logging out...");

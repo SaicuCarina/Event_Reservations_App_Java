@@ -11,12 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class App implements Search, Reserve {
     private List<User> users;
@@ -95,9 +89,8 @@ public class App implements Search, Reserve {
 
     public void addUser(User user) {
         UserDAO userDAO = new UserDAO();
-        userDAO.addUserToDB(user); // Adăugăm utilizatorul în baza de date
+        userDAO.addUserToDB(user);
 
-        // Adăugăm utilizatorul în lista aplicației
         users.add(user);
     }
 
@@ -135,14 +128,44 @@ public class App implements Search, Reserve {
             }
         }
     }
+    @Override
     public boolean check(User user){
         ReservationDAO reservationDAO = new ReservationDAO();
         int cancellationsLastMonth = reservationDAO.getCancellationsLastMonth(user.getId());
         if (cancellationsLastMonth >= 3) {
-            System.out.println("You have made more than 3 cancellations in the last month. You cannot make a new reservation at this time.");
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void generateCancellationReport(int userId) {
+        ReservationDAO reservationDAO = new ReservationDAO();
+        List<Reservation> cancelledReservations = reservationDAO.getCancelledReservations(userId);
+
+        System.out.println("Cancelled Reservations Report:");
+        for (Reservation reservation : cancelledReservations) {
+            System.out.println(reservation);
+        }
+
+        if (cancelledReservations.size() >= 3) {
+            LocalDate[] recentCancellations = new LocalDate[3];
+            for (int i = 0; i < 3; i++) {
+                recentCancellations[i] = LocalDate.parse(cancelledReservations.get(i).getCancellationDate());
+            }
+            LocalDate mostDistantDate = recentCancellations[0];
+            for (LocalDate date : recentCancellations) {
+                if (date.isBefore(mostDistantDate)) {
+                    mostDistantDate = date;
+                }
+            }
+
+            LocalDate nextAllowedReservationDate = mostDistantDate.plusDays(31);
+            System.out.println("You have made more than 3 cancellations in the last month.");
+            System.out.println("You can make your next reservation after: " + nextAllowedReservationDate);
+        } else {
+            System.out.println("You have not made more than 3 cancellations in the last month.");
+        }
     }
 
 
@@ -209,24 +232,4 @@ public class App implements Search, Reserve {
         EventDAO eventDAO = new EventDAO();
         return eventDAO.searchEventByCategory(category);
     }
-
-/*    public void generateCancellationReport(int userId) {
-        ReservationDAO reservationDAO = new ReservationDAO();
-        List<Reservation> cancelledReservations = reservationDAO.getCancelledReservations(userId);
-
-        System.out.println("Cancelled Reservations Report:");
-        for (Reservation reservation : cancelledReservations) {
-            System.out.println(reservation);
-        }
-
-        int cancellationsLastMonth = reservationDAO.getCancellationsLastMonth(userId);
-        int cancellationCount = (int) cancellationsLastMonth;
-        LocalDate lastCancellationDate = (LocalDate) cancellationsLastMonth.get("lastCancellationDate");
-
-        if (cancellationCount > 3) {
-            LocalDate nextAllowedReservationDate = lastCancellationDate.plusMonths(1);
-            System.out.println("You have made more than 3 cancellations in the last month.");
-            System.out.println("You can make your next reservation after: " + nextAllowedReservationDate);
-        }
-    }*/
 }

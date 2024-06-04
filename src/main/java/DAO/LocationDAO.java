@@ -1,6 +1,5 @@
 package DAO;
 
-import MODELS.Event;
 import MODELS.Location;
 
 import java.sql.*;

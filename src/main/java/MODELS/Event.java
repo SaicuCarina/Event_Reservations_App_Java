@@ -1,8 +1,5 @@
 package MODELS;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 public class Event {
     private int id;
     private String name;

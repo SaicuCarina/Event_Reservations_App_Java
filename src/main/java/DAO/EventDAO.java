@@ -3,11 +3,9 @@ package DAO;
 import MODELS.*;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDateTime;
+
 
 public class EventDAO {
     private MyDBConnection dbConnection;
@@ -60,7 +58,6 @@ public class EventDAO {
         Connection connection = dbConnection.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("UPDATE events SET available_seats = available_seats - ? WHERE id = ?");
-            // Set the values for the placeholders
             ps.setInt(1, seatsReserved);
             ps.setInt(2, eventId);
             ps.executeUpdate();

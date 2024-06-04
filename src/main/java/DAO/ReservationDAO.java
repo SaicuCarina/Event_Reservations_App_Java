@@ -51,7 +51,6 @@ public class ReservationDAO {
 
         Connection connection = dbConnection.getConnection();
         try {
-            // Prepare the INSERT statement
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "INSERT INTO reservations (user_id, event_id, seats_reserved, reservation_date) VALUES (?, ?, ?, ?)"
             );
@@ -67,10 +66,8 @@ public class ReservationDAO {
 
             preparedStatement.setString(4, formattedDateTime);
 
-            // Execute the INSERT statement
             preparedStatement.executeUpdate();
 
-            //System.out.println("Reservation added to the database.");
         } catch (SQLException e) {
             System.err.println("Error adding reservation to the database: " + e.getMessage());
         }
@@ -121,8 +118,6 @@ public class ReservationDAO {
                 int seatsReserved = rs.getInt("seats_reserved");
                 String reservationDate = rs.getString("reservation_date");
                 String cancellation_date = rs.getString("cancellation_date");
-
-                // Construim data și ora evenimentului pentru a verifica dacă este în viitor
                 String eventDateStr = rs.getString("date");
                 String eventTimeStr = rs.getString("time");
                 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -148,7 +143,6 @@ public class ReservationDAO {
         try {
             connection.setAutoCommit(false);
 
-            // Get the reservation details
             PreparedStatement selectStatement = connection.prepareStatement(
                     "SELECT event_id, seats_reserved FROM reservations WHERE id = ?"
             );
@@ -159,21 +153,18 @@ public class ReservationDAO {
                 int eventId = rs.getInt("event_id");
                 int seatsReserved = rs.getInt("seats_reserved");
 
-                // Update the cancellation date
                 PreparedStatement updateStatement = connection.prepareStatement(
                         "UPDATE reservations SET cancellation_date = ? WHERE id = ?"
                 );
 
                 LocalDateTime now = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String formattedDateTime = now.format(formatter);
 
                 updateStatement.setString(1, formattedDateTime);
                 updateStatement.setInt(2, reservationId);
 
                 updateStatement.executeUpdate();
-
-                // Update the available seats in the event
                 updateSeats(eventId, seatsReserved, connection);
 
                 connection.commit();
@@ -305,29 +296,5 @@ public class ReservationDAO {
         result.put("lastCancellationDate", lastCancellationDate);
         return result;
     }
-
-//    public Map<String, Object> getCancellationsLastMonth(int userId) {
-//        Map<String, Object> result = new HashMap<>();
-//        Connection connection = dbConnection.getConnection();
-//        try {
-//            PreparedStatement ps = connection.prepareStatement(
-//                    "SELECT COUNT(*) AS cancellationCount, MAX(cancellation_date) AS lastCancellationDate " +
-//                            "FROM reservations " +
-//                            "WHERE user_id = ? AND cancellation_date > CURRENT_DATE - INTERVAL '1 month'"
-//            );
-//            ps.setInt(1, userId);
-//            ResultSet rs = ps.executeQuery();
-//            if (rs.next()) {
-//                int cancellationCount = rs.getInt("cancellationCount");
-//                String lastCancellationDate = rs.getString("lastCancellationDate");
-//                result.put("cancellationCount", cancellationCount);
-//                result.put("lastCancellationDate", lastCancellationDate != null ? LocalDate.parse(lastCancellationDate) : null);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return result;
-//    }
-
 }
 

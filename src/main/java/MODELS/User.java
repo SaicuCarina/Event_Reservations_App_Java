@@ -1,7 +1,5 @@
 package MODELS;
 
-import java.util.Scanner;
-
 public class User {
     private int id;
     private String username;

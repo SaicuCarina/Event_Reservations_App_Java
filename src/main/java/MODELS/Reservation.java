@@ -1,7 +1,5 @@
 package MODELS;
 
-import java.time.LocalDateTime;
-
 public class Reservation {
     private int id;
     private int event_id;
@@ -63,5 +61,9 @@ public class Reservation {
     @Override
     public String toString() {
         return "Reservation [id=" + id + ", eventId=" + event_id + ", userId=" + user_id + ", seatsReserved=" + seats_reserved + ", reservationDate=" + reservation_date + ", cancellationDate=" + cancellation_date +"]";
+    }
+
+    public CharSequence getCancellationDate() {
+        return cancellation_date;
     }
 }

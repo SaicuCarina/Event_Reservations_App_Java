@@ -13,8 +13,6 @@ public class Location {
         this.capacity = capacity;
     }
 
-    // getters and setters
-
     @Override
     public String toString() {
         return "Location [id=" + id + ", name=" + name + ", address=" + address + ", capacity=" + capacity + "]";
