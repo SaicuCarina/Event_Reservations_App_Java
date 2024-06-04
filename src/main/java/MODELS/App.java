@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class App implements Search, Reserve{
     private List<User> users;
@@ -188,6 +189,26 @@ public class App implements Search, Reserve{
         EventDAO eventDAO = new EventDAO();
         return eventDAO.searchEventByCategory(category);
     }
+
+/*    public void generateCancellationReport(int userId) {
+        ReservationDAO reservationDAO = new ReservationDAO();
+        List<Reservation> cancelledReservations = reservationDAO.getCancelledReservations(userId);
+
+        System.out.println("Cancelled Reservations Report:");
+        for (Reservation reservation : cancelledReservations) {
+            System.out.println(reservation);
+        }
+
+        int cancellationsLastMonth = reservationDAO.getCancellationsLastMonth(userId);
+        int cancellationCount = (int) cancellationsLastMonth;
+        LocalDate lastCancellationDate = (LocalDate) cancellationsLastMonth.get("lastCancellationDate");
+
+        if (cancellationCount > 3) {
+            LocalDate nextAllowedReservationDate = lastCancellationDate.plusMonths(1);
+            System.out.println("You have made more than 3 cancellations in the last month.");
+            System.out.println("You can make your next reservation after: " + nextAllowedReservationDate);
+        }
+    }*/
 
 }
 

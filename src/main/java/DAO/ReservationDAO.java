@@ -74,7 +74,7 @@ public class ReservationDAO {
             // Execute the INSERT statement
             preparedStatement.executeUpdate();
 
-            System.out.println("Reservation added to the database.");
+            //System.out.println("Reservation added to the database.");
         } catch (SQLException e) {
             System.err.println("Error adding reservation to the database: " + e.getMessage());
         }
@@ -276,6 +276,38 @@ public class ReservationDAO {
         }
 
         return cancellationCount;
+    }
+
+    public Map<String, Object> getMapCancellationsLastMonth(int userId) {
+        Connection connection = dbConnection.getConnection();
+        int cancellationCount = 0;
+        LocalDate lastCancellationDate = null;
+
+        try {
+            LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT COUNT(*) AS cancellation_count, MAX(cancellation_date) AS last_cancellation_date " +
+                            "FROM reservations WHERE user_id = ? AND cancellation_date >= ?"
+            );
+            ps.setInt(1, userId);
+            ps.setDate(2, Date.valueOf(oneMonthAgo));
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cancellationCount = rs.getInt("cancellation_count");
+                Date lastCancellationDateSql = rs.getDate("last_cancellation_date");
+                if (lastCancellationDateSql != null) {
+                    lastCancellationDate = lastCancellationDateSql.toLocalDate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("cancellationCount", cancellationCount);
+        result.put("lastCancellationDate", lastCancellationDate);
+        return result;
     }
 
 }

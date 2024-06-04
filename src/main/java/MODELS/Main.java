@@ -131,15 +131,18 @@ import java.time.LocalDateTime;
                        int locationId = scanner.nextInt();
                        Location location;
                        location = app.searchLocationById(locationId);
-                       System.out.println(location);
+                       if(location == null)
+                           System.out.println("There isn't a location with this ID.");
+                       else
+                           System.out.println(location);
                        break;
                    case 4:
                        System.out.println("Enter location name:");
                        String locationName = scanner.nextLine();
-                       Location location1 = app.searchEventsByLocationName(locationName);
-                       if (location1 != null) {
+                       app.searchEventsByLocationName(locationName);
+                       /*if (location1 != null) {
                            System.out.println("Location found: " + location1.getName() + ", " + location1.getAddress());
-                       }
+                       }*/
                        break;
                    case 5:
                        App.showEventsByLocation();
