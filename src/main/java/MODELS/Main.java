@@ -1,11 +1,8 @@
 package MODELS;
 
-import DAO.LocationDAO;
-import DAO.UserDAO;
+import DAO.*;
 /*import DAO.ReservationDAO;*/
-import DAO.MyDBConnection;
 
-import DAO.EventDAO;
 import java.util.List;
 import java.util.Scanner;
 import java.time.LocalDateTime;
@@ -187,6 +184,12 @@ import java.time.LocalDateTime;
                        }
                        break;
                    case 8:
+
+                       boolean check = app.check(currentUser);
+                       if(!check){
+                           break;
+                       }
+
                        System.out.println("Enter event ID to reserve:");
                        int eventId = scanner.nextInt();
                        scanner.nextLine();

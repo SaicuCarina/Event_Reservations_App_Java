@@ -47,11 +47,7 @@ public class ReservationDAO {
     }
 
     public void reserveEvent(int userId, int eventId, int seatsReserved) {
-        int cancellationsLastMonth = getCancellationsLastMonth(userId);
-        if (cancellationsLastMonth >= 3) {
-            System.out.println("You have made more than 3 cancellations in the last month. You cannot make a new reservation at this time.");
-            return;
-        }
+
 
         Connection connection = dbConnection.getConnection();
         try {
@@ -309,6 +305,29 @@ public class ReservationDAO {
         result.put("lastCancellationDate", lastCancellationDate);
         return result;
     }
+
+//    public Map<String, Object> getCancellationsLastMonth(int userId) {
+//        Map<String, Object> result = new HashMap<>();
+//        Connection connection = dbConnection.getConnection();
+//        try {
+//            PreparedStatement ps = connection.prepareStatement(
+//                    "SELECT COUNT(*) AS cancellationCount, MAX(cancellation_date) AS lastCancellationDate " +
+//                            "FROM reservations " +
+//                            "WHERE user_id = ? AND cancellation_date > CURRENT_DATE - INTERVAL '1 month'"
+//            );
+//            ps.setInt(1, userId);
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                int cancellationCount = rs.getInt("cancellationCount");
+//                String lastCancellationDate = rs.getString("lastCancellationDate");
+//                result.put("cancellationCount", cancellationCount);
+//                result.put("lastCancellationDate", lastCancellationDate != null ? LocalDate.parse(lastCancellationDate) : null);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return result;
+//    }
 
 }
 

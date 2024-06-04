@@ -13,7 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class App implements Search, Reserve{
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class App implements Search, Reserve {
     private List<User> users;
     private List<Event> events;
     private List<Location> locations;
@@ -69,6 +74,7 @@ public class App implements Search, Reserve{
         }
         return null;
     }
+
     public boolean isUsernameTaken(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
@@ -96,7 +102,7 @@ public class App implements Search, Reserve{
     }
 
     @Override
-    public Location searchLocationById(int id){
+    public Location searchLocationById(int id) {
         LocationDAO locationDAO = new LocationDAO();
         Location location = locationDAO.getLocationById(id);
         if (location != null) {
@@ -105,6 +111,7 @@ public class App implements Search, Reserve{
             return null;
         }
     }
+
     public static void showEventsByLocation() {
         LocationDAO locationDAO = new LocationDAO();
         EventDAO eventDAO = new EventDAO();
@@ -128,6 +135,17 @@ public class App implements Search, Reserve{
             }
         }
     }
+    public boolean check(User user){
+        ReservationDAO reservationDAO = new ReservationDAO();
+        int cancellationsLastMonth = reservationDAO.getCancellationsLastMonth(user.getId());
+        if (cancellationsLastMonth >= 3) {
+            System.out.println("You have made more than 3 cancellations in the last month. You cannot make a new reservation at this time.");
+            return false;
+        }
+        return true;
+    }
+
+
     @Override
     public void reserveEvent(User user, Event event, int seatsReserved) {
         if (event.getAvailableSeats() >= seatsReserved) {
@@ -154,11 +172,13 @@ public class App implements Search, Reserve{
         ReservationDAO reservationDAO = new ReservationDAO();
         reservationDAO.cancelReservation(reservationId);
     }
+
     @Override
     public String getReservationInfo(int reservationId) {
         ReservationDAO reservationDAO = new ReservationDAO();
         return reservationDAO.getReservationInfoById(reservationId);
     }
+
     @Override
     public Location searchEventsByLocationName(String locationName) {
         LocationDAO locationDAO = new LocationDAO();
@@ -209,6 +229,4 @@ public class App implements Search, Reserve{
             System.out.println("You can make your next reservation after: " + nextAllowedReservationDate);
         }
     }*/
-
 }
-
