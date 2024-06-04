@@ -70,5 +70,5 @@ Using object-oriented programming (OOP) principles to ensure solid and maintaina
 
 For the purpose of this project, the database acts as a central location for organizing and controlling several components of the event reservation system.
 
-<img width="635" alt="image" src="https://github.com/SaicuCarina/Event_Reservations_App_Java/assets/93483071/d73e9570-3c76-4b5a-854e-f62daf20ae79">
+<img width="1000" alt="image" src="https://github.com/SaicuCarina/Event_Reservations_App_Java/assets/93483071/d73e9570-3c76-4b5a-854e-f62daf20ae79">
 
