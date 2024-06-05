@@ -4,7 +4,6 @@ Using object-oriented programming (OOP) principles to ensure solid and maintaina
 
 ## Technologies Used
   - Java: The primary programming language for implementing the logic and functionalities of the system.
-  - JDBC: For database connectivity and operations.
   - MySQL: To manage and query the database.
 
 ## Key Features
