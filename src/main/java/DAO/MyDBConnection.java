@@ -10,7 +10,6 @@ public class MyDBConnection {
 
     private static MyDBConnection instance;
     private Connection connection;
-
     private MyDBConnection() {
         Properties props = new Properties();
         try {
@@ -23,19 +22,15 @@ public class MyDBConnection {
             e.printStackTrace();
         }
     }
-
-
     public static synchronized MyDBConnection getInstance() {
         if (instance == null) {
             instance = new MyDBConnection();
         }
         return instance;
     }
-
     public Connection getConnection() {
         return connection;
     }
-
     public void closeConnection() {
         if (connection != null) {
             try {

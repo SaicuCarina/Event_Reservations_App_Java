@@ -17,35 +17,9 @@ import java.util.Map;
 
 public class ReservationDAO {
     private MyDBConnection dbConnection;
-
     public ReservationDAO() {
         dbConnection = MyDBConnection.getInstance();
     }
-
-    public List<Reservation> getAllReservations() {
-        Connection connection = dbConnection.getConnection();
-        List<Reservation> reservationList = new ArrayList<>();
-
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM reservations");
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                int event_id = rs.getInt("event_id");
-                int user_id = rs.getInt("user_id");
-                int seats_reserved = rs.getInt("seats_reserved");
-                String reservation_date = rs.getString("reservation_date");
-                String cancellation_date = rs.getString("cancellation_date");
-
-                Reservation reservation = new Reservation(id, event_id, user_id, seats_reserved, reservation_date, cancellation_date);
-                reservationList.add(reservation);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return reservationList;
-    }
-
     public void reserveEvent(int userId, int eventId, int seatsReserved) {
 
 
@@ -99,7 +73,6 @@ public class ReservationDAO {
 
         return cancelledReservations;
     }
-
     public List<Reservation> getUserReservations(int userId) {
         Connection connection = dbConnection.getConnection();
         List<Reservation> reservations = new ArrayList<>();
@@ -137,7 +110,6 @@ public class ReservationDAO {
         }
         return reservations;
     }
-
     public void cancelReservation(int reservationId) {
         Connection connection = dbConnection.getConnection();
         try {
@@ -188,7 +160,6 @@ public class ReservationDAO {
             }
         }
     }
-
     private void updateSeats(int eventId, int seats, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
                 "UPDATE events SET available_seats = available_seats + ? WHERE id = ?"
@@ -265,36 +236,5 @@ public class ReservationDAO {
         return cancellationCount;
     }
 
-    public Map<String, Object> getMapCancellationsLastMonth(int userId) {
-        Connection connection = dbConnection.getConnection();
-        int cancellationCount = 0;
-        LocalDate lastCancellationDate = null;
-
-        try {
-            LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
-            PreparedStatement ps = connection.prepareStatement(
-                    "SELECT COUNT(*) AS cancellation_count, MAX(cancellation_date) AS last_cancellation_date " +
-                            "FROM reservations WHERE user_id = ? AND cancellation_date >= ?"
-            );
-            ps.setInt(1, userId);
-            ps.setDate(2, Date.valueOf(oneMonthAgo));
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                cancellationCount = rs.getInt("cancellation_count");
-                Date lastCancellationDateSql = rs.getDate("last_cancellation_date");
-                if (lastCancellationDateSql != null) {
-                    lastCancellationDate = lastCancellationDateSql.toLocalDate();
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("cancellationCount", cancellationCount);
-        result.put("lastCancellationDate", lastCancellationDate);
-        return result;
-    }
 }
 

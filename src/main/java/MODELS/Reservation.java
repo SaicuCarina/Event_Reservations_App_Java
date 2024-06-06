@@ -16,53 +16,16 @@ public class Reservation {
         this.reservation_date = reservation_date;
         this.cancellation_date = cancellation_date;
     }
-
-    // Getters and setters
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
-    public int getEventId() {
-        return event_id;
-    }
-
-    public void setEventId(int eventId) {
-        this.event_id = eventId;
-    }
-
-    public int getUserId() {
-        return user_id;
-    }
-
-    public void setUserId(int userId) {
-        this.user_id = userId;
-    }
-
-    public int getSeatsReserved() {
-        return seats_reserved;
-    }
-
-    public void setSeatsReserved(int seatsReserved) {
-        this.seats_reserved = seatsReserved;
-    }
-
-    public String getReservationDateTime() {
-        return reservation_date;
-    }
-
-    public void setReservationDateTime(String reservationDate) {
-        this.reservation_date = reservationDate;
-    }
-
     @Override
     public String toString() {
         return "Reservation [id=" + id + ", eventId=" + event_id + ", userId=" + user_id + ", seatsReserved=" + seats_reserved + ", reservationDate=" + reservation_date + ", cancellationDate=" + cancellation_date +"]";
     }
-
     public CharSequence getCancellationDate() {
         return cancellation_date;
     }

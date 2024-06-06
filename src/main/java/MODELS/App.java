@@ -24,7 +24,6 @@ public class App implements Search, Reserve {
         this.locations = new ArrayList<>();
         this.reservations = new ArrayList<>();
     }
-
     public static boolean isEventAvailable(Event event) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -50,50 +49,43 @@ public class App implements Search, Reserve {
             return false;
         }
     }
-
     @Override
     public User searchUserByUsernameAndPassword(String username, String password) {
-        for (User user : users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
         UserDAO userDAO = new UserDAO();
         List<User> usersFromDB = userDAO.getUsersFromDB();
         for (User user : usersFromDB) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                users.add(user);
                 return user;
             }
         }
         return null;
     }
-
     public boolean isUsernameTaken(String username) {
-        for (User user : users) {
+        UserDAO userDAO = new UserDAO();
+        List<User> usersFromDB = userDAO.getUsersFromDB();
+        for (User user : usersFromDB) {
             if (user.getUsername().equals(username)) {
                 return true;
             }
         }
         return false;
     }
-
     public boolean isEmailTaken(String email) {
-        for (User user : users) {
+        UserDAO userDAO = new UserDAO();
+        List<User> usersFromDB = userDAO.getUsersFromDB();
+        for (User user : usersFromDB) {
             if (user.getEmail().equals(email)) {
                 return true;
             }
         }
         return false;
     }
-
     public void addUser(User user) {
         UserDAO userDAO = new UserDAO();
         userDAO.addUserToDB(user);
 
         users.add(user);
     }
-
     @Override
     public Location searchLocationById(int id) {
         LocationDAO locationDAO = new LocationDAO();
@@ -104,7 +96,6 @@ public class App implements Search, Reserve {
             return null;
         }
     }
-
     public static void showEventsByLocation() {
         LocationDAO locationDAO = new LocationDAO();
         EventDAO eventDAO = new EventDAO();
@@ -137,7 +128,6 @@ public class App implements Search, Reserve {
         }
         return true;
     }
-
     @Override
     public void generateCancellationReport(int userId) {
         ReservationDAO reservationDAO = new ReservationDAO();
@@ -167,8 +157,6 @@ public class App implements Search, Reserve {
             System.out.println("You have not made more than 3 cancellations in the last month.");
         }
     }
-
-
     @Override
     public void reserveEvent(User user, Event event, int seatsReserved) {
         if (event.getAvailableSeats() >= seatsReserved) {
@@ -183,25 +171,21 @@ public class App implements Search, Reserve {
             System.out.println("Not enough available seats for event: " + event.getName());
         }
     }
-
     @Override
     public List<Reservation> getUserReservations(User user) {
         ReservationDAO reservationDAO = new ReservationDAO();
         return reservationDAO.getUserReservations(user.getId());
     }
-
     @Override
     public void cancelReservation(int reservationId) {
         ReservationDAO reservationDAO = new ReservationDAO();
         reservationDAO.cancelReservation(reservationId);
     }
-
     @Override
     public String getReservationInfo(int reservationId) {
         ReservationDAO reservationDAO = new ReservationDAO();
         return reservationDAO.getReservationInfoById(reservationId);
     }
-
     @Override
     public Location searchEventsByLocationName(String locationName) {
         LocationDAO locationDAO = new LocationDAO();
@@ -220,13 +204,11 @@ public class App implements Search, Reserve {
         }
         return location;
     }
-
     @Override
     public List<Event> searchEventsByDate(String date) {
         EventDAO eventDAO = new EventDAO();
         return eventDAO.getEventsByDate(date);
     }
-
     @Override
     public List<Event> searchEventByCategory(EventCategory category) {
         EventDAO eventDAO = new EventDAO();

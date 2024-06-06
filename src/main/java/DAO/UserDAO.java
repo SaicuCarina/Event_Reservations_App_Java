@@ -8,11 +8,9 @@ import java.util.List;
 
 public class UserDAO {
     private MyDBConnection dbConnection;
-
     public UserDAO() {
         dbConnection = MyDBConnection.getInstance();
     }
-
     public List<User> getUsersFromDB() {
         Connection connection = dbConnection.getConnection();
         List<User> userList = new ArrayList<>();
@@ -34,7 +32,6 @@ public class UserDAO {
 
         return userList;
     }
-
     public void addUserToDB(User user) {
         Connection connection = dbConnection.getConnection();
         try {

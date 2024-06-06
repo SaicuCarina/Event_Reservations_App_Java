@@ -9,11 +9,9 @@ import java.util.List;
 
 public class EventDAO {
     private MyDBConnection dbConnection;
-
     public EventDAO() {
         dbConnection = MyDBConnection.getInstance();
     }
-
     public List<Event> getAllEventsFromDB() {
         Connection connection = dbConnection.getConnection();
         List<Event> eventList = new ArrayList<>();
@@ -53,7 +51,6 @@ public class EventDAO {
         }
         return eventList;
     }
-
     public void updateSeats(int eventId, int seatsReserved) {
         Connection connection = dbConnection.getConnection();
         try {
@@ -107,7 +104,6 @@ public class EventDAO {
         }
         return eventList;
     }
-
     public List<Event> getEventsByDate(String date) {
         Connection connection = dbConnection.getConnection();
         List<Event> eventList = new ArrayList<>();

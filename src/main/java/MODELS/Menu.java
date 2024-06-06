@@ -113,7 +113,7 @@ public class Menu {
                     break;
                 case 8:
                     if(!app.check(currentUser)){
-                        System.out.println("You have made more than 3 cancellations in the last month. You cannot make a new reservation at this time.");
+                        System.out.println("You have made more than 3 cancellations in the last month. You cannot make a new reservation at this time. For more view report!");
                         break;
                     }
                     System.out.println("Enter event ID to reserve:");
@@ -162,7 +162,7 @@ public class Menu {
                         System.out.println("No report is available to be shown.");
                         break;
                     }
-                    System.out.println("Generating cancellation report for current user...");
+                    System.out.println("Generating cancellation report for current user.");
                     app.generateCancellationReport(currentUser.getId());
                     break;
                 case 13:

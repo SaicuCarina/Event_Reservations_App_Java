@@ -8,11 +8,9 @@ import java.util.List;
 
 public class LocationDAO {
     private MyDBConnection dbConnection;
-
     public LocationDAO() {
         dbConnection = MyDBConnection.getInstance();
     }
-
     public List<Location> getAllLocations() {
         Connection connection = dbConnection.getConnection();
         List<Location> locationList = new ArrayList<>();
@@ -33,7 +31,6 @@ public class LocationDAO {
         }
         return locationList;
     }
-
     public Location getLocationById(int Id){
         Connection connection = dbConnection.getConnection();
         Location foundLocation = null;
@@ -56,7 +53,6 @@ public class LocationDAO {
         }
         return foundLocation;
     }
-
     public Location getLocationByName(String name){
         Connection connection = dbConnection.getConnection();
         Location foundLocation = null;
